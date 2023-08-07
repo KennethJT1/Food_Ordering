@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 import Button from "./elements/Button";
+import PizzaImg from "../assets/images/pizza_banner.png";
 
 export const Banner = () => {
   return (
@@ -8,7 +9,7 @@ export const Banner = () => {
         <h2 className="mb-6 text-4xl font-bold text-white">
           Food Ordering our best Service
         </h2>
-        <p>Getting Started!</p>
+        <p className="ont-semi-bold text-lg text-red-600 py-2">Getting Started!</p>
         <div className="btn-container">
           <Button>Order Now</Button>
           <a
@@ -20,11 +21,7 @@ export const Banner = () => {
         </div>
       </div>
       <div className="banner-image w-full md:w-1/2 p-3 flex justify-end">
-        <img
-          src={require("../assets/images/pizza_banner.png ")}
-          alt="banner"
-          className="max-h-95"
-        />
+        <img src={PizzaImg} alt="banner" className="max-h-95" />
       </div>
     </div>
   );
