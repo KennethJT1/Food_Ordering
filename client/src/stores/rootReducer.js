@@ -1,13 +1,13 @@
 import { combineReducers } from "redux";
 import cartReducer from "./cart/CartSlice";
 import productReducer from "./menu/productsSlice";
-// import addressReducer from "./userInfo/addressSlice";
+import addressReducer from "./userInfo/addressSlice";
 
 const rootReducer = combineReducers(
     {
         cart: cartReducer,
         products: productReducer,
-        // address: addressReducer
+        address: addressReducer
     }
 );
 

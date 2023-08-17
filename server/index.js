@@ -1,16 +1,15 @@
 const express = require("express");
 const cors = require("cors");
+const env = require('dotenv').config({path: '.env'});
 
 const db = require('./db');
+db.on('error', console.error.bind(console, 'MongoDB connection error:'))
 
 const app = express();
 const productRouter = require('./routes/productRouter');
 const userRouter = require('./routes/productRouter');
 
 const Order = require('./models/orderModel');
-
-const env = require('dotenv').config({path: '.env'});
-
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const corsOptions = {
@@ -39,6 +38,9 @@ app.use(
     },
   })
 );
+
+app.use('/api/', productRouter);
+app.use('/api/', userRouter);
 
 app.post('/webhook', async (req, res) => {
     let data, eventType;
@@ -71,55 +73,46 @@ app.post('/webhook', async (req, res) => {
     res.sendStatus(200);
   });
 
-db.on('error', console.error.bind(console, 'MongoDB connection error:'))
+app.post('/create-payment-intent', async(req, res) => {
+  try {
+      const { orderItems, shippingAddress, userId } = req.body;
 
-app.get("/", (req, res) => {
-    res.json({ message: "Welcome to Food Ordering"});
-});
+      const totalPrice = calculateOrderAmount(orderItems);
+
+      const taxPrice = 0;
+      const shippingPrice = 0;
+
+      const order = new Order({
+          orderItems,
+          shippingAddress,
+          paymentMethod: 'stripe',
+          totalPrice,
+          taxPrice,
+          shippingPrice,
+          user: ''
+      })
+
+      // await order.save();
+
+      const paymentIntent = await stripe.paymentIntents.create({
+          amount: totalPrice,
+          currency: 'ngn'
+      })
+
+      res.send({
+          clientSecret: paymentIntent.client_secret
+      })
+  } catch(e) {
+      res.status(400).json({
+          error: {
+              message: e.message
+          }
+      })
+  }
+})
 
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
-app.use('/api/', productRouter);
-app.use('/api/', userRouter);
-
-app.post('/create-payment-intent', async(req, res) => {
-    try {
-        const { orderItems, shippingAddress, userId } = req.body;
-        console.log(shippingAddress);
-
-        const totalPrice = calculateOrderAmount(orderItems);
-
-        const taxPrice = 0;
-        const shippingPrice = 0;
-
-        const order = new Order({
-            orderItems,
-            shippingAddress,
-            paymentMethod: 'stripe',
-            totalPrice,
-            taxPrice,
-            shippingPrice,
-            user: ''
-        })
-
-        // await order.save();
-
-        const paymentIntent = await stripe.paymentIntents.create({
-            amount: totalPrice,
-            currency: 'usd'
-        })
-
-        res.send({
-            clientSecret: paymentIntent.client_secret
-        })
-    } catch(e) {
-        res.status(400).json({
-            error: {
-                message: e.message
-            }
-        })
-    }
-})

@@ -6,10 +6,11 @@ import "react-multi-carousel/lib/styles.css";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../stores/cart/CartSlice";
 
+const baseURL = import.meta.env.VITE_BASE_URL;
+
 export const ProductPreview = () => {
   const [products, setProducts] = useState([]);
   const dispatch = useDispatch();
-
   const responsive = {
     superLargeDesktop: {
       breakpoint: { max: 4000, min: 3000 },
@@ -34,7 +35,7 @@ export const ProductPreview = () => {
   };
 
   useEffect(() => {
-    fetch("http://localhost:4980/api/products")
+    fetch(`${baseURL}/api/products`)
       .then((resp) => resp.json())
       .then((data) => setProducts(data?.data))
       .catch((e) => console.log("Error==>", e.message));
@@ -43,11 +44,11 @@ export const ProductPreview = () => {
     <div className="container mx-auto pb-4 w-2/3 text-white bg-black">
       <Carousel responsive={responsive}>
         {products.length > 0 &&
-          products.map((p, i) => {
+          products.map((p) => {
             return (
               <div className="w-full p-3">
                 <ProductPreviewCard
-                  key={i}
+                  key={p._id}
                   product={p}
                   onAddProduct={onAddProduct}
                 />

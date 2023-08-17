@@ -7,9 +7,9 @@ const Product = require('../models/productModel')
 router.get('/products', async (req, res) => {
     try {
         const products = await Product.find()
-        res.status(200).send({ data: products})
+        res.status(200).json({ data: products})
     } catch (err) {
-        res.status(400).send({ error: err.message})
+        res.status(400).json({ error: err.message})
     }
 })
 
@@ -23,9 +23,9 @@ router.get('/products-by-categories', async(req, res) => {
             }},
             { $project: { name: '$_id', products: 1, _id: 0}}
         ])
-        res.status(200).send({ data: products})
+        res.status(200).json({ data: products})
     } catch (err) {
-        res.status(400).send({ error: err.message})
+        res.status(400).json({ error: err.message})
     }
 })
 

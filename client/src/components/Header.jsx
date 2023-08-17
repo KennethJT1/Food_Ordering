@@ -2,7 +2,7 @@ import foody from "../assets/images/foody.png";
 import cartIcon from "../assets/icons/cart.svg";
 import { Link } from "react-router-dom";
 
-export const Header = () => {
+export const Header = ({ cartCount }) => {
   return (
     <nav id="header" className="bg-black text-white">
       <div className="w-full container mx-auto flex flex-wrap items-center justify-between mt-0 py-2">
@@ -16,13 +16,22 @@ export const Header = () => {
         </div>
 
         <div className="nav-menu-wrapper flex items-center justify-between space-x-10">
-          <Link to="/" className="text-xl">Home</Link>
-          <Link to="#about" className="text-xl">About</Link>
+          <Link to="/" className="text-xl">
+            Home
+          </Link>
+          <Link to="#about" className="text-xl">
+            About
+          </Link>
         </div>
 
         <div className="flex items-center justify-center space-x-4">
-          <Link to="/cart">
+          <Link to="/cart" className="mr-4 relative">
             <img src={cartIcon} alt="cart" />
+            {cartCount > 0 ? (
+              <div className="rounded-full bg-yellow-400 text-white inline-flex justify-center items-center w-full absolute -top-2 -right-2">
+                {cartCount}
+              </div>
+            ) : null}
           </Link>
           <Link to="/login">Log In</Link>
           <Link to="/register">Sign Up</Link>
