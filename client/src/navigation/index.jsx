@@ -9,6 +9,7 @@ import PaymentSuccess from "../pages/PaymentSuccess";
 import { useSelector } from "react-redux";
 import { cartProducts } from "../stores/cart/CartSlice";
 import { Footer } from "../components/Footer";
+
 const Navigation = () => {
   const productsInCart = useSelector(cartProducts);
 
